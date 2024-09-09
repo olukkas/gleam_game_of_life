@@ -15,7 +15,8 @@ pub type Grid =
 fn wait(milis: Int) -> Nil
 
 pub fn main() {
-  run_game(5, 4, 10)
+  let initial_grid = create_grid(5, 4)
+  loop(initial_grid, 10)
 }
 
 pub fn create_grid(width: Int, height: Int) -> Grid {
@@ -75,8 +76,7 @@ fn get_cell(grid: Grid, row: Int, collumn: Int) -> Cell {
 
 fn next_cell_state(cell: Cell, alive_neighbors: Int) -> Cell {
   case cell, alive_neighbors {
-    Alive, 2 -> Dead
-    Alive, 3 -> Dead
+    Alive, x if x < 2 || x > 3 -> Dead
     Alive, _ -> Alive
     Dead, 3 -> Alive
     Dead, _ -> Dead
@@ -89,15 +89,10 @@ fn update_grid(grid: Grid) -> Grid {
 
   let alive_neighbors =
     get_neighbors(grid, x, y)
-    |> list.map(fn(c) { c == Alive })
+    |> list.filter(fn(c) { c == Alive })
     |> list.length()
 
   next_cell_state(cell, alive_neighbors)
-}
-
-fn run_game(width: Int, height: Int, generations: Int) {
-  let grid = create_grid(width, height)
-  loop(grid, generations)
 }
 
 fn loop(grid: Grid, generation: Int) {
@@ -112,11 +107,6 @@ fn loop(grid: Grid, generation: Int) {
     }
   }
 }
-
-// fn all_cells_died(grid: Grid) -> Bool {
-//  use row <- list.all(grid)
-//  list.all(row, fn(cell) { cell == Dead })
-//}
 
 fn at(xs: List(a), idx: Int) -> Option(a) {
   case xs, idx {
