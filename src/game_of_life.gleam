@@ -1,3 +1,4 @@
+import gleam/bool
 import gleam/int
 import gleam/io
 import gleam/list
@@ -101,20 +102,16 @@ fn all_cell_dead(grid: Grid) -> Bool {
 }
 
 fn loop(grid: Grid, generation: Int) {
-  case generation {
-    0 -> Nil
-    _ -> {
-      let new_grid = update_grid(grid)
-      case all_cell_dead(grid) {
-        True -> Nil
-        False -> {
-          display_grid(grid)
-          io.println("")
-          wait(500)
-          loop(new_grid, generation - 1)
-        }
-      }
-
+  use <- bool.guard(when: generation == 0, return: Nil)
+  
+  let new_grid = update_grid(grid)
+  case all_cell_dead(new_grid) {
+    True -> Nil
+    False -> {
+      display_grid(grid)
+      io.println("")
+      wait(500)
+      loop(new_grid, generation - 1)
     }
   }
 }
