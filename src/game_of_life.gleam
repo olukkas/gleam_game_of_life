@@ -95,15 +95,26 @@ fn update_grid(grid: Grid) -> Grid {
   next_cell_state(cell, alive_neighbors)
 }
 
+fn all_cell_dead(grid: Grid) -> Bool {
+  use row <- list.all(grid)
+  list.all(row, fn(cell) { cell == Dead })
+}
+
 fn loop(grid: Grid, generation: Int) {
   case generation {
     0 -> Nil
     _ -> {
       let new_grid = update_grid(grid)
-      display_grid(grid)
-      io.println("")
-      wait(500)
-      loop(new_grid, generation - 1)
+      case all_cell_dead(grid) {
+        True -> Nil
+        False -> {
+          display_grid(grid)
+          io.println("")
+          wait(500)
+          loop(new_grid, generation - 1)
+        }
+      }
+
     }
   }
 }
