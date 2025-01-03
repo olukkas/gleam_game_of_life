@@ -103,7 +103,7 @@ fn all_cell_dead(grid: Grid) -> Bool {
 
 fn loop(grid: Grid, generation: Int) {
   use <- bool.guard(when: generation == 0, return: Nil)
-  
+
   let new_grid = update_grid(grid)
   case all_cell_dead(new_grid) {
     True -> Nil
